@@ -50,7 +50,8 @@ defmodule ObjectDetection.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.1"}
+      {:bandit, "~> 1.1"},
+      {:req, "~> 0.4"}
     ]
   end
 
@@ -65,7 +66,7 @@ defmodule ObjectDetection.MixProject do
       setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]

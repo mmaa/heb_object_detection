@@ -1,0 +1,28 @@
+<.header>
+  <%= @image.label %>
+</.header>
+
+<.list>
+  <:item title="Original"><img src={"data:#{@image.type};base64,#{Base.encode64(@image.binary)}"} /></:item>
+  <:item :if={@image.object_detection_enabled} title="Objects">
+    <%= if @image.objects, do: @image.objects |> Enum.join(", ") %>
+  </:item>
+  <:item :if={@image.object_detection_enabled} title="Enhanced">
+    <%= if @image.binary_enhanced do %>
+      <img src={"data:#{@image.type};base64,#{Base.encode64(@image.binary_enhanced)}"} />
+    <% end %>
+  </:item>
+</.list>
+
+<.back navigate={~p"/"}>Back to images</.back>
+
+<.modal :if={@live_action == :edit} id="image-modal" show on_cancel={JS.patch(~p"/#{@image}")}>
+  <.live_component
+    module={ObjectDetectionWeb.ImageLive.FormComponent}
+    id={@image.id}
+    title={@page_title}
+    action={@live_action}
+    image={@image}
+    patch={~p"/#{@image}"}
+  />
+</.modal>

@@ -17,7 +17,9 @@ defmodule ObjectDetectionWeb.Router do
   scope "/", ObjectDetectionWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", ImageLive.Index, :index
+    live "/new", ImageLive.Index, :new
+    live "/:id", ImageLive.Show, :show
   end
 
   # Other scopes may use custom stacks.
