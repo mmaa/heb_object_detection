@@ -1,18 +1,17 @@
 # ObjectDetection
 
-To start your Phoenix server:
+A live demo can be found at [heb-object-detection.fly.dev](https://heb-object-detection.fly.dev).
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+Please note that it's been tricky getting this to work smoothly in production with hosting on a free tier. The API response may be a 500, but the request may still go through successfully.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Try making the following request and then reloading the site.
+```
+POST https://heb-object-detection.fly.dev/images
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+{
+  "label": "wind farm",
+  "image_url": "https://imagga.com/static/images/tagging/wind-farm-538576_640.jpg",
+  "object_detection_enabled": "true"
+}
+```
 
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
