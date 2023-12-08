@@ -8,7 +8,6 @@ defmodule ObjectDetection.Images.Image do
     field :url, :string
     field :type, :string
     field :binary, :binary
-    field :binary_enhanced, :binary
     field :objects, {:array, :string}
 
     field :image_url, :string, virtual: true
@@ -19,7 +18,7 @@ defmodule ObjectDetection.Images.Image do
   @doc false
   def create_changeset(image, attrs) do
     image
-    |> cast(attrs, [:label, :url, :type, :binary, :object_detection_enabled, :binary_enhanced, :objects])
+    |> cast(attrs, [:label, :url, :type, :binary, :object_detection_enabled, :objects])
     |> ensure_label()
     |> validate_required([:label, :object_detection_enabled])
     |> validate_url_or_binary()
@@ -30,7 +29,7 @@ defmodule ObjectDetection.Images.Image do
 
   def update_changeset(image, attrs) do
     image
-    |> cast(attrs, [:binary_enhanced, :objects])
+    |> cast(attrs, [:objects])
   end
 
   defp ensure_label(changeset) do

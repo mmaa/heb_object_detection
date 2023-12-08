@@ -14,6 +14,12 @@ defmodule ObjectDetectionWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/images", ObjectDetectionWeb do
+    pipe_through :api
+
+    resources "/", ImageController, only: [:index, :create, :show]
+  end
+
   scope "/", ObjectDetectionWeb do
     pipe_through :browser
 
@@ -21,11 +27,6 @@ defmodule ObjectDetectionWeb.Router do
     live "/new", ImageLive.Index, :new
     live "/:id", ImageLive.Show, :show
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", ObjectDetectionWeb do
-  #   pipe_through :api
-  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:object_detection, :dev_routes) do

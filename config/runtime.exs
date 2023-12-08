@@ -20,6 +20,10 @@ if System.get_env("PHX_SERVER") do
   config :object_detection, ObjectDetectionWeb.Endpoint, server: true
 end
 
+config :object_detection, :imagga_credentials,
+  api_key: System.get_env("IMAGGA_API_KEY"),
+  api_secret: System.get_env("IMAGGA_API_SECRET")
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

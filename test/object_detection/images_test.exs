@@ -10,9 +10,17 @@ defmodule ObjectDetection.ImagesTest do
 
     @invalid_attrs %{label: nil, object_detection_enabled: nil, url: nil, binary: nil}
 
-    test "list_images/0 returns all images" do
+    test "list_images/1 with no object filter returns all images" do
       image = image_fixture()
       assert Images.list_images() == [image]
+    end
+
+    test "list_images/1 with list of objects returns images containing any of the objects" do
+      dog_image = image_fixture(%{label: "dog", objects: ["dog", "cow"]})
+      cat_image = image_fixture(%{label: "cat", objects: ["cat", "cow"]})
+      _cow_image = image_fixture(%{label: "cow", objects: ["cow"]})
+
+      assert Images.list_images(["dog", "cat"]) == [dog_image, cat_image]
     end
 
     test "get_image!/1 returns the image with given id" do
@@ -23,14 +31,15 @@ defmodule ObjectDetection.ImagesTest do
     test "create_image/1 with valid data creates a image" do
       valid_attrs = %{
         label: "some label",
-        object_detection_enabled: true,
-        url: "http://s3.mmaa.co/frysquint.jpg"
+        object_detection_enabled: false,
+        type: "image/jpeg",
+        binary: "some binary"
       }
 
       assert {:ok, %Image{} = image} = Images.create_image(valid_attrs)
       assert image.label == "some label"
-      assert image.object_detection_enabled == true
-      assert image.url == "http://s3.mmaa.co/frysquint.jpg"
+      assert image.object_detection_enabled == false
+      assert image.binary == "some binary"
     end
 
     test "create_image/1 with invalid data returns error changeset" do
@@ -41,12 +50,10 @@ defmodule ObjectDetection.ImagesTest do
       image = image_fixture()
 
       update_attrs = %{
-        binary_enhanced: "some binary_enhanced",
         objects: ["foo", "bar"]
       }
 
       assert {:ok, %Image{} = image} = Images.update_image(image, update_attrs)
-      assert image.binary_enhanced == "some binary_enhanced"
       assert image.objects == ["foo", "bar"]
     end
 

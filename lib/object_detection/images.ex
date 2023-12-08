@@ -17,8 +17,14 @@ defmodule ObjectDetection.Images do
       [%Image{}, ...]
 
   """
-  def list_images do
-    Repo.all(Image)
+  def list_images(objects \\ []) do
+    if Enum.any?(objects) do
+      Image
+      |> where(fragment("? && objects", ^objects))
+      |> Repo.all()
+    else
+      Repo.all(Image)
+    end
   end
 
   @doc """
@@ -50,9 +56,25 @@ defmodule ObjectDetection.Images do
 
   """
   def create_image(attrs \\ %{}) do
-    %Image{}
-    |> Image.create_changeset(attrs)
-    |> Repo.insert()
+    case %Image{}
+         |> Image.create_changeset(attrs)
+         |> Repo.insert() do
+      {:ok, image} ->
+        if image.object_detection_enabled do
+          case detect_objects!(image) do
+            {:ok, objects} ->
+              {:ok, update_image(image, %{objects: objects})}
+
+            _ ->
+              {:ok, image}
+          end
+        else
+          {:ok, image}
+        end
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """
@@ -100,5 +122,34 @@ defmodule ObjectDetection.Images do
   """
   def change_image(%Image{} = image, attrs \\ %{}) do
     Image.update_changeset(image, attrs)
+  end
+
+  @doc """
+  Makes and external API call to detect objects in an image.
+  """
+  def detect_objects!(%Image{} = image, threshold \\ 25) do
+    case Req.post(req(), form: [image_base64: Base.encode64(image.binary), threshold: threshold]) do
+      {:ok,
+       %Req.Response{
+         status: 200,
+         body: %{
+           "status" => %{"type" => "success"},
+           "result" => %{"tags" => tags}
+         }
+       }} ->
+        {:ok,
+         tags
+         |> Enum.map(fn %{"tag" => %{"en" => object}} -> object end)}
+    end
+  end
+
+  def req() do
+    api_key = Application.get_env(:object_detection, :imagga_credentials)[:api_key]
+    api_secret = Application.get_env(:object_detection, :imagga_credentials)[:api_secret]
+
+    Req.new(
+      url: "https://api.imagga.com/v2/tags",
+      auth: {:basic, "#{api_key}:#{api_secret}"}
+    )
   end
 end

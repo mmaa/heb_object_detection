@@ -9,7 +9,15 @@
 
 <.table id="images" rows={@streams.images} row_click={fn {_id, image} -> JS.navigate(~p"/#{image}") end}>
   <:col :let={{_id, image}} label="Label"><%= image.label %></:col>
-  <:col :let={{_id, image}} label="Objects"><%= image.objects %></:col>
+  <:col :let={{_id, image}} label="Objects">
+    <%= if image.object_detection_enabled do %>
+      <%= if image.objects, do: image.objects |> Enum.join(", ") %>
+    <% else %>
+      <span class="italic">
+        not enabled
+      </span>
+    <% end %>
+  </:col>
   <:action :let={{_id, image}}>
     <div class="sr-only">
       <.link navigate={~p"/#{image}"}>Show</.link>

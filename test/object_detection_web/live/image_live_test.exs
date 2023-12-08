@@ -5,7 +5,7 @@ defmodule ObjectDetectionWeb.ImageLiveTest do
   import ObjectDetection.ImagesFixtures
 
   @create_attrs %{
-    object_detection_enabled: true,
+    object_detection_enabled: false,
     url: "http://s3.mmaa.co/frysquint.jpg"
   }
 

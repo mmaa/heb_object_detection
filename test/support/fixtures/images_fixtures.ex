@@ -12,8 +12,9 @@ defmodule ObjectDetection.ImagesFixtures do
       attrs
       |> Enum.into(%{
         label: "some label",
-        object_detection_enabled: true,
-        url: "http://s3.mmaa.co/frysquint.jpg"
+        object_detection_enabled: false,
+        type: "image/jpeg",
+        binary: "asdf"
       })
       |> ObjectDetection.Images.create_image()
 

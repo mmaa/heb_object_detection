@@ -8,12 +8,12 @@ defmodule ObjectDetection.Repo.Migrations.CreateImages do
       add :url, :string
       add :type, :string
       add :binary, :binary
-      add :binary_enhanced, :binary
       add :objects, {:array, :string}
 
       timestamps(type: :utc_datetime)
     end
 
     create unique_index(:images, [:label])
+    create index(:images, [:objects], using: :gin)
   end
 end

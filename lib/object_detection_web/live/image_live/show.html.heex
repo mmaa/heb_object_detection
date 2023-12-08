@@ -4,12 +4,13 @@
 
 <.list>
   <:item title="Original"><img src={"data:#{@image.type};base64,#{Base.encode64(@image.binary)}"} /></:item>
-  <:item :if={@image.object_detection_enabled} title="Objects">
-    <%= if @image.objects, do: @image.objects |> Enum.join(", ") %>
-  </:item>
-  <:item :if={@image.object_detection_enabled} title="Enhanced">
-    <%= if @image.binary_enhanced do %>
-      <img src={"data:#{@image.type};base64,#{Base.encode64(@image.binary_enhanced)}"} />
+  <:item title="Objects">
+    <%= if @image.object_detection_enabled do %>
+      <%= if @image.objects, do: @image.objects |> Enum.join(", ") %>
+    <% else %>
+      <span class="italic">
+        not enabled
+      </span>
     <% end %>
   </:item>
 </.list>
